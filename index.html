@@ -1,75 +1,69 @@
-<!DOCTYPE html> <!-- Объявление типа документа HTML5 -->
-<html lang="ru"> <!-- Корень документа с указанием русского языка -->
-<head> <!-- Технический заголовок страницы -->
-<meta charset="UTF-8"> <!-- Кодировка UTF-8 для корректного отображения кириллицы -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Настройка масштаба для мобильных -->
-<title>JS Practice 05 - BOM & Timers</title> <!-- Заголовок вкладки браузера -->
-<link rel="stylesheet" href="style.css"> <!-- Подключение внешнего файла стилей -->
-</head> <!-- Закрытие технического заголовка -->
-<body> <!-- Основное тело страницы -->
-<div class="container"> <!-- Главный контейнер для центрирования контента -->
-<h1>Практическая работа: BOM, Таймеры и Диалоги</h1> <!-- Основной заголовок работы по ТЗ -->
+<!DOCTYPE html> <!-- Тип документа HTML5 -->
+<html lang="ru"> <!-- Язык страницы — русский -->
+<head> <!-- Технический блок -->
+    <meta charset="UTF-8"> <!-- Кодировка для кириллицы -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Адаптивность -->
+    <title>JS Practice 05 - Финал</title> <!-- Заголовок -->
+    <link rel="stylesheet" href="style.css"> <!-- Стили -->
+</head> <!-- Конец головы -->
+<body class="light-theme"> <!-- Тело со светлой темой -->
+    <div class="container"> <!-- Центрирующий блок -->
+        <header class="header-flex"> <!-- Шапка -->
+            <h1>Практика: BOM и Таймеры</h1> <!-- Заголовок -->
+            <button id="theme-toggle">Сменить тему</button> <!-- Переключатель тем -->
+        </header> <!-- Конец шапки -->
 
-<!-- Задание 1: Секундомер -->
-<section class="practice-box"> <!-- Секция первого задания -->
-<h2>⏱️ Секундомер</h2> <!-- Заголовок секции -->
-<div id="stopwatch-display" class="display">00:00:00</div> <!-- Блок вывода времени ЧЧ:ММ:СС -->
-<button id="stopwatch-start">Старт</button> <!-- Кнопка запуска секундомера -->
-<button id="stopwatch-stop">Стоп</button> <!-- Кнопка остановки секундомера -->
-<button id="stopwatch-reset">Сброс</button> <!-- Кнопка сброса времени -->
-</section> <!-- Конец секции -->
+        <!-- Задание 1: Секундомер -->
+        <section class="card"> <!-- Карточка секундомера -->
+            <h2>⏱ Секундомер</h2> <!-- Название -->
+            <div id="stopwatch-display" class="display">00:00:00</div> <!-- Табло -->
+            <div class="controls"> <!-- Кнопки -->
+                <button id="stopwatch-start">Старт</button> <!-- Старт -->
+                <button id="stopwatch-stop">Стоп</button> <!-- Стоп -->
+                <button id="stopwatch-reset">Сброс</button> <!-- Сброс -->
+            </div> <!-- Конец кнопок -->
+        </section> <!-- Конец секции -->
 
-<!-- Задание 2: Обратный отсчёт -->
-<section class="practice-box"> <!-- Секция второго задания -->
-<h2>⏲️ Обратный отсчёт</h2> <!-- Заголовок секции -->
-<input type="number" id="countdown-input" placeholder="Введите секунды"> <!-- Поле ввода для секунд -->
-<div id="countdown-display" class="display">00:00</div> <!-- Блок вывода оставшегося времени -->
-<button id="countdown-start">Запустить</button> <!-- Кнопка старта отсчета -->
-<button id="countdown-stop">Остановить</button> <!-- Кнопка паузы отсчета -->
-<button id="countdown-reset">Сброс</button> <!-- Кнопка очистки данных -->
-</section> <!-- Конец секции -->
+        <!-- Задание 2: Обратный отсчёт -->
+        <section class="card"> <!-- Карточка отсчета -->
+            <h2>⏳ Обратный отсчёт</h2> <!-- Название -->
+            <input type="number" id="countdown-input" placeholder="Введите секунды"> <!-- Поле ввода -->
+            <div id="countdown-display" class="display">00:00</div> <!-- Табло -->
+            <div class="controls"> <!-- Кнопки -->
+                <button id="countdown-start">Запустить</button> <!-- Старт -->
+                <button id="countdown-stop">Остановить</button> <!-- Пауза -->
+                <button id="countdown-reset">Сброс</button> <!-- Сброс -->
+            </div> <!-- Конец кнопок -->
+        </section> <!-- Конец секции -->
 
-<!-- Задание 3: Уведомления (Используем структуру из подсказки ТЗ) -->
-<section class="practice-box"> <!-- Секция третьего задания -->
-<h2>🔔 Уведомления</h2> <!-- Заголовок секции -->
-<button id="notification-show">Показать уведомление через 3 сек</button> <!-- Кнопка вызова setTimeout -->
-<div id="notification" class="toast" style="display: none;"> <!-- Всплывающий блок (скрыт в CSS) -->
-<span>✅ Операция выполнена успешно!</span> <!-- Текст уведомления -->
-<button id="notification-close">×</button> <!-- Кнопка закрытия для clearTimeout -->
-</div> <!-- Конец блока уведомления -->
-</section> <!-- Конец секции -->
+        <!-- Задание 3: Уведомления -->
+        <section class="card"> <!-- Карточка уведомлений -->
+            <h2>🔔 Уведомления</h2> <!-- Название -->
+            <button id="notification-show">Показать уведомление через 3 сек</button> <!-- Кнопка вызова -->
+            <div id="notification" class="notification-toast" style="display: none;"> <!-- Блок сообщения -->
+                <span>✅ Операция выполнена успешно!</span> <!-- Текст -->
+                <button id="notification-close">Закрыть</button> <!-- Закрыть -->
+            </div> <!-- Конец блока -->
+        </section> <!-- Конец секции -->
 
-<!-- Задание 4: Информация о браузере -->
-<section class="practice-box"> <!-- Секция работы с объектами BOM -->
-<h2>🌐 Информация о браузере</h2> <!-- Заголовок секции по ТЗ -->
-<button id="browser-info-btn">Показать информацию</button> <!-- Основная кнопка вызова -->
-<button id="browser-update-btn">Обновить информацию</button> <!-- Кнопка обновления по ТЗ -->
-<div id="browser-info" class="info-output"></div> <!-- Контейнер для вывода 10 пунктов -->
-</section> <!-- Конец секции -->
+        <!-- Задание 4: Информация о браузере (BOM) -->
+        <section class="card"> <!-- Карточка данных ВОМ -->
+            <h2>ℹ️ Данные браузера (BOM)</h2> <!-- Название -->
+            <button id="browser-info-btn">Показать полную информацию</button> <!-- Кнопка получения -->
+            <div id="browser-info" class="info-block"></div> <!-- Вывод списка -->
+        </section> <!-- Конец секции -->
 
-<!-- Задание 5: Автосохранение -->
-<section class="practice-box"> <!-- Секция пятого задания (PRO) -->
-<h2>💾 Автосохранение формы</h2> <!-- Заголовок секции -->
-<textarea id="autosave-textarea" placeholder="Начните писать текст..."></textarea> <!-- Поле ввода текста -->
-<p id="autosave-indicator">Состояние: ожидание...</p> <!-- Индикатор статуса сохранения -->
-<button id="autosave-toggle">Остановить автосохранение</button> <!-- Кнопка управления интервалом -->
-<button id="autosave-clear">Очистить черновик</button> <!-- Кнопка удаления из localStorage -->
-</section> <!-- Конец секции -->
-
-<!-- Задание 6: Pomodoro -->
-<section class="practice-box"> <!-- Секция шестого задания -->
-<h2>🍅 Pomodoro Таймер</h2> <!-- Заголовок секции -->
-<div id="pomo-display" class="display">25:00</div> <!-- Табло помидора -->
-<button id="pomo-start">Фокус</button> <!-- Кнопка запуска сессии -->
-<button id="pomo-pause">Пауза</button> <!-- Кнопка приостановки -->
-<button id="pomo-reset">Сброс</button> <!-- Кнопка сброса на 25 мин -->
-<p>Завершено сессий: <span id="sessions-count">0</span></p> <!-- Счетчик из памяти -->
-</section> <!-- Конец секции -->
-</div> <!-- Конец главного контейнера -->
-
-<!-- Кнопка смены темы -->
-<div id="theme-toggle" class="theme-fab" title="Сменить тему">☀️</div> <!-- Плавающая кнопка (Блок 0) -->
-
-<script src="script.js"></script> <!-- Подключение скрипта логики -->
-</body> <!-- Конец тела страницы -->
-</html>
+        <!-- Задание 5: Автосохранение (PRO) -->
+        <section class="card"> <!-- Карточка автосохранения -->
+            <h2>💾 Автосохранение (PRO)</h2> <!-- Название -->
+            <p id="autosave-indicator">Ожидание ввода...</p> <!-- Статус -->
+            <textarea id="autosave-textarea" placeholder="Ваш текст здесь..."></textarea> <!-- Увеличенное поле -->
+            <div class="controls"> <!-- Кнопки -->
+                <button id="autosave-toggle">Остановить автосохранение</button> <!-- Вкл/выкл -->
+                <button id="autosave-clear">Очистить черновик</button> <!-- Очистка -->
+            </div> <!-- Конец кнопок -->
+        </section> <!-- Конец секции -->
+    </div> <!-- Конец контейнера -->
+    <script src="script.js"></script> <!-- Скрипты -->
+</body> <!-- Конец тела -->
+</html> <!-- Конец HTML -->

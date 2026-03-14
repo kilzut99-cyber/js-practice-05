@@ -1,101 +1,88 @@
-/* Базовые настройки страницы */
-body {
-font-family: 'Segoe UI', sans-serif; /* Установка современного шрифта */
-background-color: #f4f7f6; /* Светло-серый фон страницы по умолчанию */
-color: #333; /* Основной цвет текста */
-padding: 20px; /* Отступы от краев окна браузера */
-transition: background 0.3s, color 0.3s; /* Плавный переход для смены темы */
+:root { /* Цвета светлой темы */
+    --bg-color: #f4f7f6; /* Фон страницы */
+    --card-bg: #ffffff; /* Фон карточек */
+    --text-color: #2c3e50; /* Цвет текста */
+    --accent: #3498db; /* Синий цвет */
 }
 
-/* Стили для темной темы */
-body.dark-theme {
-background-color: #1a1a1a; /* Темный фон страницы */
-color: #f0f0f0; /* Светлый текст для темной темы */
+body.dark-theme { /* Цвета темной темы */
+    --bg-color: #121212; /* Черный фон */
+    --card-bg: #1e1e1e; /* Темные карточки */
+    --text-color: #e0e0e0; /* Светлый текст */
+    --accent: #5dade2; /* Голубой акцент */
 }
 
-/* Контейнер карточек */
-.container {
-max-width: 700px; /* Ограничение ширины для аккуратного вида */
-margin: 0 auto; /* Центрирование контейнера по горизонтали */
+body { /* Общие стили */
+    background-color: var(--bg-color); /* Применение фона */
+    color: var(--text-color); /* Применение текста */
+    font-family: 'Segoe UI', sans-serif; /* Шрифт */
+    transition: background 0.4s, color 0.4s; /* Плавность темы */
+    display: flex; /* Флекс для центровки */
+    justify-content: center; /* Центр по горизонтали */
+    padding: 20px; /* Поля */
+    margin: 0; /* Сброс */
 }
 
-/* Оформление секций заданий */
-.practice-box {
-background: #fff; /* Белый фон карточки задания */
-padding: 20px; /* Внутренние отступы в карточке */
-margin-bottom: 25px; /* Вертикальный зазор между заданиями */
-border-radius: 12px; /* Скругление углов карточки */
-box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Легкая тень для объема */
+.container { width: 100%; max-width: 850px; } /* Ограничение ширины */
+
+.header-flex { /* Шапка */
+    display: flex; /* Ряд */
+    justify-content: space-between; /* По краям */
+    align-items: center; /* По центру вертикали */
+    margin-bottom: 30px; /* Отступ снизу */
 }
 
-/* Карточки в темной теме */
-body.dark-theme .practice-box {
-background: #2d2d2d; /* Темно-серый фон карточек */
-box-shadow: 0 4px 15px rgba(0,0,0,0.3); /* Усиленная тень */
+.card { /* Блоки заданий */
+    background: var(--card-bg); /* Цвет карточки */
+    padding: 30px; /* Поля */
+    border-radius: 15px; /* Скругление */
+    margin-bottom: 25px; /* Расстояние */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* Тень */
 }
 
-/* Стили цифровых табло */
-.display {
-font-size: 2.5rem; /* Крупный шрифт для таймеров */
-font-family: monospace; /* Моноширинный шрифт для цифр */
-text-align: center; /* Центрирование текста времени */
-margin: 15px 0; /* Отступы сверху и снизу */
-color: #28a745; /* Зеленый цвет цифр */
+.display { /* Табло цифр */
+    font-size: 3.5rem; /* Размер шрифта */
+    font-weight: bold; /* Жирный */
+    text-align: center; /* Центр */
+    margin: 20px 0; /* Поля */
 }
 
-/* Стили кнопок */
-button {
-padding: 10px 15px; /* Размеры кнопок */
-margin: 5px; /* Расстояние между кнопками */
-border: none; /* Удаление рамки */
-border-radius: 6px; /* Скругление углов */
-cursor: pointer; /* Курсор в виде указателя */
-font-weight: bold; /* Жирный шрифт */
+#autosave-textarea { /* Поле ввода (Задание 5) */
+    width: 100%; /* Ширина */
+    min-height: 250px; /* Увеличенная высота по ТЗ */
+    padding: 15px; /* Внутренние поля */
+    box-sizing: border-box; /* Учет рамок */
+    border-radius: 10px; /* Скругление */
+    border: 2px solid #ddd; /* Рамка */
+    margin: 15px 0; /* Поля */
+    background: transparent; /* Прозрачность */
+    color: inherit; /* Цвет текста */
+    resize: vertical; /* Тянуть только вниз */
 }
 
-button:hover { opacity: 0.8; } /* Эффект при наведении */
-
-/* Стили вывода информации о браузере (Задание 4) */
-.info-output ul {
-list-style: none; /* Убираем стандартные маркеры списка */
-padding: 0; /* Обнуляем внутренние отступы */
-margin-top: 15px; /* Отступ сверху от кнопок */
+button { /* Общие кнопки */
+    padding: 12px 20px; /* Размер */
+    cursor: pointer; /* Палец */
+    border-radius: 8px; /* Скругление */
+    border: none; /* Без рамок */
+    background: var(--accent); /* Синий цвет */
+    color: white; /* Белый текст */
+    font-weight: 600; /* Жирный */
 }
 
-.info-output li {
-padding: 8px 0; /* Расстояние между строками списка */
-border-bottom: 1px solid #eee; /* Разделительная линия */
-font-size: 0.9rem; /* Чуть уменьшенный шрифт */
-display: flex; /* Ряд для выравнивания */
-justify-content: space-between; /* Категория слева, значение справа */
+.notification-toast { /* Уведомление */
+    position: fixed; /* Фиксация */
+    top: 20px; /* Сверху */
+    right: 20px; /* Справа */
+    background: #27ae60; /* Зеленый */
+    color: white; /* Белый текст */
+    padding: 15px 25px; /* Поля */
+    border-radius: 8px; /* Скругление */
+    display: flex; /* Ряд */
+    align-items: center; /* Центр */
+    gap: 15px; /* Промежуток */
+    z-index: 1000; /* Сверху всех */
 }
 
-.info-output li strong { color: #007bff; } /* Синий цвет для категорий */
-
-/* Уведомление (Toast) */
-.toast {
-position: fixed; /* Фиксация на экране */
-top: 20px; /* Отступ сверху */
-right: 20px; /* Отступ справа */
-background: #28a745; /* Зеленый фон */
-color: white; /* Белый текст */
-padding: 15px 25px; /* Внутренние поля */
-border-radius: 8px; /* Скругление */
-z-index: 1000; /* Поверх всех элементов */
-}
-
-/* Кнопка смены темы (FAB) */
-.theme-fab {
-position: fixed; /* Фиксируем на экране */
-bottom: 30px; /* Отступ снизу */
-right: 30px; /* Отступ справа */
-width: 60px; /* Ширина круга */
-height: 60px; /* Высота круга */
-background: #007bff; /* Синий фон */
-border-radius: 50%; /* Круглая форма */
-display: flex; /* Центрирование иконки */
-align-items: center; /* Центр по вертикали */
-justify-content: center; /* Центр по горизонтали */
-cursor: pointer; /* Указатель */
-box-shadow: 0 4px 10px rgba(0,0,0,0.3); /* Тень */
-}
+.info-block ul { list-style: none; padding: 0; } /* Список BOM */
+.info-block li { padding: 8px 0; border-bottom: 1px solid #eee; word-break: break-all; } /* Строки данных */
