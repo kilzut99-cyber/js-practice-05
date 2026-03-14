@@ -1,210 +1,191 @@
+/** 
+ * ПРАКТИЧЕСКАЯ РАБОТА: BOM И ТАЙМЕРЫ
+ * Все строки прокомментированы. Обоснования "ПОЧЕМУ?" добавлены к таймерам.
+ */
+
 // --- БЛОК 0: СМЕНА ТЕМЫ ---
-const themeBtn = document.getElementById('theme-toggle'); // Получаем кнопку-переключатель темы
-const checkAutoTheme = () => { // Функция автоматической настройки темы
-    const hour = new Date().getHours(); // Получаем текущий час (0-23)
-    const isNight = hour >= 21 || hour < 6; // Условие ночного времени (после 21 или до 6 утра)
-    document.body.classList.toggle('dark-theme', isNight); // Включаем темную тему, если сейчас ночь
-    themeBtn.textContent = isNight ? '🌙' : '☀️'; // Меняем иконку на луну или солнце
-};
-checkAutoTheme(); // Запускаем проверку темы сразу при загрузке скрипта
-themeBtn.onclick = () => { // Обработка клика по кнопке темы
-    const isDark = document.body.classList.toggle('dark-theme'); // Переключаем класс темы вручную
-    themeBtn.textContent = isDark ? '🌙' : '☀️'; // Обновляем иконку кнопки
+const themeBtn = document.getElementById('theme-toggle'); // Получаем плавающую кнопку
+themeBtn.onclick = () => { // Обработка клика
+    const isDark = document.body.classList.toggle('dark-theme'); // Переключаем класс темы на body
+    themeBtn.textContent = isDark ? '🌙' : '☀️'; // Меняем иконку (луна/солнце)
 };
 
-// --- ЗАДАНИЕ 1: СЕКУНДОМЕР (Структура из PDF стр. 3) ---
-let seconds = 0; // Переменная для хранения общего количества секунд
-let intervalId = null; // Переменная для хранения ID интервала (из подсказки в ТЗ)
-const display = document.getElementById("stopwatch-display"); // Элемент для вывода времени
+// --- ЗАДАНИЕ 1: СЕКУНДОМЕР ---
+let seconds = 0; // Переменная счетчика секунд
+let intervalId = null; // ID интервала (из подсказки ТЗ)
+const display = document.getElementById("stopwatch-display"); // Дисплей вывода времени
 
-function updateDisplay() { // Функция обновления текста на экране
-    const h = Math.floor(seconds / 3600); // Вычисляем полные часы
-    const m = Math.floor((seconds % 3600) / 60); // Вычисляем полные минуты
-    const s = seconds % 60; // Вычисляем остаток секунд
-    // Форматируем вывод в ЧЧ:ММ:СС с добавлением нулей слева через padStart
-    display.textContent = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+function updateDisplay() { // Функция обновления текста на дисплее
+    const h = String(Math.floor(seconds / 3600)).padStart(2, "0"); // Часы
+    const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, "0"); // Минуты
+    const s = String(seconds % 60).padStart(2, "0"); // Секунды
+    display.textContent = `${h}:${m}:${s}`; // Вывод в формате ЧЧ:ММ:СС
 }
 
-document.getElementById("stopwatch-start").onclick = () => { // Клик по кнопке "Старт"
-    if (intervalId !== null) return; // Если таймер уже запущен, выходим (защита от двойного запуска)
-    // Использую setInterval, потому что по ТЗ нужно обновлять время каждую 1000мс (1 секунду)
-    intervalId = setInterval(() => {
-        seconds++; // Увеличиваем счетчик секунд
-        updateDisplay(); // Обновляем дисплей на странице
-    }, 1000); // Установка интервала в 1 секунду
+document.getElementById("stopwatch-start").onclick = () => { // Старт
+    if (intervalId !== null) return; // Защита от двойного запуска (ТЗ стр. 6)
+    // Использую setInterval, потому что нам нужно повторять инкремент строго каждую 1000мс
+    intervalId = setInterval(() => { seconds++; updateDisplay(); }, 1000);
 };
 
-document.getElementById("stopwatch-stop").onclick = () => { // Клик по кнопке "Стоп"
-    // Использую clearInterval здесь, так как нужно остановить процесс счета секунд
-    clearInterval(intervalId);
-    intervalId = null; // Важно: сбрасываем ID, чтобы кнопка "Старт" снова могла работать
+document.getElementById("stopwatch-stop").onclick = () => { // Стоп
+    // Использую clearInterval здесь, так как необходимо прекратить выполнение функции интервала
+    clearInterval(intervalId); intervalId = null; // Очистка ID
 };
 
-document.getElementById("stopwatch-reset").onclick = () => { // Клик по кнопке "Сброс"
-    clearInterval(intervalId); // Остановка таймера перед сбросом (обязательное требование ТАБУ)
-    intervalId = null; // Очистка ID
-    seconds = 0; // Обнуление переменной времени
-    updateDisplay(); // Возврат дисплея в состояние 00:00:00
+document.getElementById("stopwatch-reset").onclick = () => { // Сброс
+    // clearInterval нужен для остановки процесса перед обнулением переменных (ТАБУ)
+    clearInterval(intervalId); intervalId = null; seconds = 0; updateDisplay(); 
 };
 
-// --- ЗАДАНИЕ 2: ОБРАТНЫЙ ОТСЧЕТ (Структура из PDF стр. 3-4) ---
-let timeLeft = 0; // Переменная для хранения оставшегося времени (из подсказки в ТЗ)
-let countdownId = null; // ID интервала обратного отсчета (из подсказки в ТЗ)
-const cdInput = document.getElementById("countdown-input"); // Поле ввода секунд
-const cdDisplay = document.getElementById("countdown-display"); // Дисплей вывода
+// --- ЗАДАНИЕ 2: ОБРАТНЫЙ ОТСЧЕТ ---
+let timeLeft = 0; // Оставшееся время (из подсказки ТЗ)
+let countdownId = null; // ID интервала (из подсказки ТЗ)
+const cdInput = document.getElementById("countdown-input"); // Поле ввода
+const cdDisplay = document.getElementById("countdown-display"); // Дисплей
 
-document.getElementById("countdown-start").onclick = () => { // Клик по кнопке "Запустить"
-    const inputValue = parseInt(cdInput.value, 10); // Преобразуем введенный текст в целое число
-    // Валидация: проверяем, что введено число больше нуля
-    if (isNaN(inputValue) || inputValue <= 0) {
-        cdDisplay.textContent = "❌ Введите число > 0"; // Вывод ошибки на страницу (не alert)
-        return; // Прекращаем выполнение функции
+document.getElementById("countdown-start").onclick = () => { // Запуск
+    const val = parseInt(cdInput.value, 10); // Преобразование ввода в число
+    if (isNaN(val) || val <= 0) { // Валидация ввода (ТЗ стр. 7)
+        cdDisplay.textContent = "❌ Введите число > 0"; // Вывод ошибки текстом
+        return;
     }
-    if (countdownId !== null) clearInterval(countdownId); // Если таймер уже запущен — останавливаем старый перед новым пуском
-    timeLeft = inputValue; // Устанавливаем время из инпута
-    // Использую setInterval, потому что нужно уменьшать значение каждую секунду
+    if (countdownId !== null) clearInterval(countdownId); // Сброс старого таймера перед новым пуском
+    timeLeft = val; // Установка времени
+    // Использую setInterval, так как значение должно уменьшаться циклично раз в секунду
     countdownId = setInterval(() => {
-        if (timeLeft <= 0) { // Если время закончилось
-            clearInterval(countdownId); // Останавливаем таймер (обязательно по ТЗ)
-            countdownId = null; // Сбрасываем ID
-            cdDisplay.textContent = "⌛ Время вышло!"; // Показываем сообщение об окончании на странице
-            return; // Выходим из интервала
+        if (timeLeft <= 0) { // Конец отсчета
+            // clearInterval обязателен при достижении нуля, чтобы остановить выполнение кода
+            clearInterval(countdownId); countdownId = null; cdDisplay.textContent = "⌛ Время вышло!"; return;
         }
-        timeLeft--; // Уменьшаем счетчик на 1
-        const m = Math.floor(timeLeft / 60); // Считаем минуты
-        const s = timeLeft % 60; // Считаем секунды
-        cdDisplay.textContent = `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`; // Вывод в формате ММ:СС
-    }, 1000); // Шаг интервала — 1 секунда
+        timeLeft--; // Уменьшение счетчика
+        const m = String(Math.floor(timeLeft / 60)).padStart(2, "0"); // Расчет минут
+        const s = String(timeLeft % 60).padStart(2, "0"); // Расчет секунд
+        cdDisplay.textContent = `${m}:${s}`; // Формат ММ:СС
+    }, 1000);
 };
 
-document.getElementById("countdown-stop").onclick = () => { // Кнопка "Остановить"
-    clearInterval(countdownId); // Использую clearInterval для паузы
-    countdownId = null; // Сброс ID
+document.getElementById("countdown-stop").onclick = () => { clearInterval(countdownId); countdownId = null; }; // Пауза
+document.getElementById("countdown-reset").onclick = () => { // Сброс
+    clearInterval(countdownId); countdownId = null; cdInput.value = ""; cdDisplay.textContent = "00:00"; 
 };
 
-document.getElementById("countdown-reset").onclick = () => { // Кнопка "Сброс"
-    clearInterval(countdownId); // Остановка таймера
-    countdownId = null; // Сброс ID
-    cdInput.value = ""; // Очистка поля ввода
-    cdDisplay.textContent = "00:00"; // Очистка дисплея
-};
-
-// --- ЗАДАНИЕ 3: УВЕДОМЛЕНИЯ (Структура из PDF стр. 4-5) ---
-let showTimerId = null; // ID таймера для задержки показа (из подсказки в ТЗ)
-let hideTimerId = null; // ID таймера для автоматического скрытия (из подсказки в ТЗ)
+// --- ЗАДАНИЕ 3: УВЕДОМЛЕНИЯ (Используем структуру из подсказки ТЗ стр. 8) ---
+let showTimerId = null; // ID таймера задержки показа
+let hideTimerId = null; // ID таймера автоматического скрытия
 const toast = document.getElementById("notification"); // Элемент уведомления
 
-document.getElementById("notification-show").onclick = () => { // Клик на "Показать через 3 сек"
-    if (showTimerId !== null) clearTimeout(showTimerId); // Если нажали повторно — отменяем старый таймер запуска (ТЗ)
-    // Использую setTimeout, так как уведомление должно появиться с задержкой в 3 секунды (3000мс)
+document.getElementById("notification-show").onclick = () => { // Клик на кнопку
+    // Согласно подсказке ТЗ: если нажали повторно — отменяем старый таймер запуска
+    if (showTimerId !== null) clearTimeout(showTimerId); 
+    
+    // Использую setTimeout, так как уведомление должно появиться один раз спустя 3000мс
     showTimerId = setTimeout(() => {
-        toast.style.display = "block"; // Делаем уведомление видимым
-        // Использую setTimeout здесь, чтобы скрыть блок автоматически через 5 секунд после показа
-        hideTimerId = setTimeout(() => {
-            toast.style.display = "none"; // Прячем блок
-        }, 5000); // 5 секунд показа
-    }, 3000); // 3 секунды задержки
+        toast.style.display = "block"; // Показываем блок
+        
+        // Использую setTimeout для автоматического скрытия через 5 секунд после появления
+        hideTimerId = setTimeout(() => { toast.style.display = "none"; }, 5000);
+    }, 3000);
 };
 
-document.getElementById("notification-close").onclick = () => { // Клик на крестик в уведомлении
-    // Использую clearTimeout, чтобы отменить запланированное авто-скрытие, если пользователь закрыл сам
-    clearTimeout(hideTimerId);
-    toast.style.display = "none"; // Прячем блок немедленно
+document.getElementById("notification-close").onclick = () => { // Закрытие вручную
+    // Использую clearTimeout, чтобы отменить запланированное авто-скрытие, если юзер закрыл сам
+    clearTimeout(hideTimerId); toast.style.display = "none"; // Прячем блок немедленно
 };
 
 // --- ЗАДАНИЕ 4: ИНФОРМАЦИЯ О БРАУЗЕРЕ (BOM) ---
-// Получаем ссылки на элементы из DOM (подсказка стр. 5)
-const infoBtn = document.getElementById("browser-info-btn"); // Кнопка "Показать"
-const updateBtn = document.getElementById("browser-update-btn"); // Кнопка "Обновить"
-const infoBlock = document.getElementById("browser-info"); // Контейнер для списка
+const infoBlock = document.getElementById("browser-info"); // Ссылка на блок вывода
 
-// Основная функция вывода данных (структура из подсказки стр. 5-6)
-function displayBrowserInfo() {
-    // 10. Определение устройства через регулярное выражение (требование ТЗ)
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    const deviceType = isMobile ? "📱 Мобильное устройство" : "💻 Десктоп";
+function displayBrowserInfo() { // Функция формирования списка
+    // Определение типа устройства (регулярка из ТЗ стр. 9)
+    const isMob = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     
-    // 7. Определение онлайн-статуса (требование ТЗ)
-    const onlineStatus = navigator.onLine ? "🟢 Онлайн" : "🔴 Офлайн";
+    // Функция для короткого вывода декодированной строки (понятной пользователю)
+    const formatShort = (str, len) => {
+        const decoded = decodeURIComponent(str); // Декодируем (кириллица вместо %D0)
+        return decoded.length > len ? decoded.substring(0, len) + "..." : decoded; // Обрезаем по лимиту
+    };
 
-    // Формируем HTML-разметку списка из 10 пунктов (требование ТЗ стр. 5)
+    // Формируем HTML: только URL и Путь короткие, остальные - полные (ТЗ стр. 9)
     const info = `
         <ul>
-            <li><strong>1. URL:</strong> ${location.href}</li> <!-- Текущий URL страницы -->
-            <li><strong>2. Протокол:</strong> ${location.protocol}</li> <!-- http: или https: -->
-            <li><strong>3. Домен:</strong> ${location.hostname}</li> <!-- Имя хоста -->
-            <li><strong>4. Путь:</strong> ${location.pathname}</li> <!-- Путь к файлу -->
-            <li><strong>5. Язык:</strong> ${navigator.language}</li> <!-- Язык браузера -->
-            <!-- 6. User Agent с ограничением в 100 символов (требование ТЗ стр. 5) -->
-            <li><strong>6. User Agent:</strong> ${navigator.userAgent.substring(0, 100)}...</li>
-            <li><strong>7. Статус:</strong> ${onlineStatus}</li> <!-- Онлайн или Офлайн -->
-            <li><strong>8. Разрешение экрана:</strong> ${screen.width} x ${screen.height}</li> <!-- Screen object -->
-            <li><strong>9. Размер окна:</strong> ${window.innerWidth} x ${window.innerHeight}</li> <!-- Window object -->
-            <li><strong>10. Устройство:</strong> ${deviceType}</li> <!-- Результат проверки регуляркой -->
-        </ul>
-    `;
-    
-    // Выводим сформированную строку в блок (требование ТЗ стр. 6)
-    infoBlock.innerHTML = info;
+            <li><strong>1. URL:</strong> <span>${formatShort(location.href, 30)}</span></li> <!-- КОРОТКИЙ И ДЕКОДИРОВАННЫЙ -->
+            <li><strong>2. Протокол:</strong> <span>${location.protocol}</span></li> <!-- Полный -->
+            <li><strong>3. Домен:</strong> <span>${location.hostname}</span></li> <!-- Полный -->
+            <li><strong>4. Путь:</strong> <span>${formatShort(location.pathname, 20)}</span></li> <!-- КОРОТКИЙ И ДЕКОДИРОВАННЫЙ -->
+            <li><strong>5. Язык:</strong> <span>${navigator.language}</span></li> <!-- Полный -->
+            <li><strong>6. User Agent:</strong> <span>${navigator.userAgent.substring(0, 100)}...</span></li> <!-- Лимит 100 по ТЗ -->
+            <li><strong>7. Статус:</strong> <span>${navigator.onLine ? "🟢 Онлайн" : "🔴 Офлайн"}</span></li> <!-- Полный -->
+            <li><strong>8. Экран:</strong> <span>${screen.width} x ${screen.height}</span></li> <!-- Полный -->
+            <li><strong>9. Окно:</strong> <span>${window.innerWidth} x ${window.innerHeight}</span></li> <!-- Полный -->
+            <li><strong>10. Устройство:</strong> <span>${isMob ? "📱 Мобильное" : "💻 Десктоп"}</span></li> <!-- Полный -->
+        </ul>`;
+    infoBlock.innerHTML = info; // Вывод в DOM
 }
 
-// Назначаем обработчик на кнопку "Показать информацию"
-infoBtn.addEventListener("click", displayBrowserInfo);
+document.getElementById("browser-info-btn").onclick = displayBrowserInfo; // Событие на кнопку
+document.getElementById("browser-update-btn").onclick = displayBrowserInfo; // Событие на Обновить
+window.addEventListener("resize", () => { if (infoBlock.innerHTML !== "") displayBrowserInfo(); }); // Обновление при ресайзе
 
-// Назначаем обработчик на кнопку "Обновить информацию"
-updateBtn.addEventListener("click", displayBrowserInfo);
+// --- ЗАДАНИЕ 5: АВТОСОХРАНЕНИЕ ---
+let autosaveId = null; // ID интервала (из подсказки ТЗ стр. 10)
+const area = document.getElementById("autosave-textarea"); // Поле текста
+const indicator = document.getElementById("autosave-indicator"); // Статус
+const toggleBtn = document.getElementById("autosave-toggle"); // Кнопка управления
 
-// Дополнительное требование ТЗ: при изменении размера окна данные должны обновляться (стр. 5)
-// Использую событие 'resize', потому что нужно пересчитывать window.innerWidth/innerHeight
-window.addEventListener("resize", () => {
-    // Если информация уже была выведена (блок не пустой), обновляем её
-    if (infoBlock.innerHTML !== "") {
-        displayBrowserInfo();
-    }
-});
-
-// --- ЗАДАНИЕ 5: АВТОСОХРАНЕНИЕ (Структура из PDF стр. 8) ---
-let autosaveId = null; // ID интервала автосохранения (из подсказки в ТЗ)
-const area = document.getElementById("autosave-textarea"); // Поле для текста
-const indicator = document.getElementById("autosave-indicator"); // Элемент статуса
-const toggleBtn = document.getElementById("autosave-toggle"); // Кнопка включения/выключения
-
-function saveToLocalStorage() { // Функция сохранения данных
-    const text = area.value.trim(); // Получаем текст без лишних пробелов
-    if (text === "") return; // Валидация: не сохраняем в localStorage пустые строки (ТЗ стр. 7)
-    localStorage.setItem("draft", text); // Записываем текст в хранилище под ключом "draft"
-    indicator.textContent = `✅ Сохранено в ${new Date().toLocaleTimeString()}`; // Обновляем индикатор времени
+function saveToLS() { // Функция записи в localStorage
+    const text = area.value.trim(); // Чтение данных без пробелов
+    if (text === "") return; // Валидация: пустые строки не сохраняем (ТЗ стр. 10)
+    localStorage.setItem("draft", text); // Сохранение под ключом "draft"
+    indicator.textContent = `✅ Сохранено в ${new Date().toLocaleTimeString()}`; // Время сохранения
 }
 
-function startAutosave() { // Функция запуска процесса
-    // Использую setInterval, потому что по ТЗ сохранение должно происходить каждые 10 секунд (10000мс)
-    autosaveId = setInterval(saveToLocalStorage, 10000);
-    toggleBtn.textContent = "Остановить автосохранение"; // Меняем текст на кнопке
-}
-
-// При загрузке страницы восстанавливаем данные (ТЗ стр. 7)
-window.addEventListener("load", () => {
-    const saved = localStorage.getItem("draft"); // Пытаемся получить сохраненный текст
-    if (saved) {
-        area.value = saved; // Восстанавливаем текст в поле
-        indicator.textContent = "📄 Черновик восстановлен"; // Сообщаем об этом
-    }
-    startAutosave(); // Сразу запускаем таймер сохранения
+window.addEventListener("load", () => { // Восстановление при загрузке окна
+    const saved = localStorage.getItem("draft"); // Поиск записи
+    if (saved) { area.value = saved; indicator.textContent = "📄 Черновик восстановлен"; }
+    // Использую setInterval для цикличного сохранения каждые 10 сек (10000мс) по ТЗ
+    autosaveId = setInterval(saveToLS, 10000); 
 });
 
 toggleBtn.onclick = () => { // Обработчик кнопки управления интервалом
-    if (autosaveId === null) { // Если сохранение сейчас выключено
-        startAutosave(); // Запускаем его
-    } else { 
-        // Использую clearInterval здесь, так как пользователь принудительно остановил процесс
-        clearInterval(autosaveId);
-        autosaveId = null; // Сбрасываем ID
-        toggleBtn.textContent = "Возобновить автосохранение"; // Меняем текст
+    if (autosaveId === null) { // Если выключено
+        autosaveId = setInterval(saveToLS, 10000); // Запускаем
+        toggleBtn.textContent = "Остановить автосохранение"; // Меняем текст
+    } else { // Если включено
+        // Использую clearInterval здесь, так как пользователь остановил процесс вручную
+        clearInterval(autosaveId); autosaveId = null; toggleBtn.textContent = "Возобновить автосохранение";
     }
 };
 
-document.getElementById("autosave-clear").onclick = () => { // Кнопка очистки
-    localStorage.removeItem("draft"); // Удаляем запись из памяти браузера
-    area.value = ""; // Очищаем поле ввода
-    indicator.textContent = "🗑️ Черновик удален"; // Обновляем статус
+document.getElementById("autosave-clear").onclick = () => { // Очистка черновика
+    localStorage.removeItem("draft"); area.value = ""; indicator.textContent = "🗑️ Удалено";
 };
+
+// --- ЗАДАНИЕ 6: POMODORO ---
+let pTime = 25 * 60; // 25 минут в секундах
+let pId = null; // ID интервала помидора
+
+document.getElementById("pomo-start").onclick = () => { // Старт сессии
+    if (pId !== null) return; // Защита от повторного запуска
+    // Использую setInterval для отсчета времени помидора каждую секунду
+    pId = setInterval(() => {
+        if (pTime <= 0) { // Завершение сессии
+            // clearInterval необходим в конце, чтобы остановить процесс отсчета
+            clearInterval(pId); pId = null; pTime = 25 * 60; // Сброс
+            document.getElementById("sessions-count").textContent = Number(document.getElementById("sessions-count").textContent) + 1;
+            alert("🍅 Помидор завершен!"); return;
+        }
+        pTime--; // Уменьшение
+        const m = String(Math.floor(pTime / 60)).padStart(2, "0"); // Мин
+        const s = String(pTime % 60).padStart(2, "0"); // Сек
+        document.getElementById("pomo-display").textContent = `${m}:${s}`; // Вывод
+    }, 1000);
+};
+
+document.getElementById("pomo-pause").onclick = () => { clearInterval(pId); pId = null; }; // Пауза
+document.getElementById("pomo-reset").onclick = () => { clearInterval(pId); pId = null; pTime = 25 * 60; document.getElementById("pomo-display").textContent = "25:00"; }; // Сброс
+
+
+
+
+
