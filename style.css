@@ -1,88 +1,79 @@
-:root { /* Цвета светлой темы */
-    --bg-color: #f4f7f6; /* Фон страницы */
-    --card-bg: #ffffff; /* Фон карточек */
-    --text-color: #2c3e50; /* Цвет текста */
-    --accent: #3498db; /* Синий цвет */
+/* Основные стили страницы */
+body { 
+    font-family: 'Segoe UI', sans-serif; /* Настройка шрифта */
+    padding: 40px; /* Отступы от краев окна */
+    line-height: 1.6; /* Расстояние между строками текста */
+    transition: background 0.3s, color 0.3s; /* Плавность переключения тем */
 }
 
-body.dark-theme { /* Цвета темной темы */
-    --bg-color: #121212; /* Черный фон */
-    --card-bg: #1e1e1e; /* Темные карточки */
-    --text-color: #e0e0e0; /* Светлый текст */
-    --accent: #5dade2; /* Голубой акцент */
+/* Настройки светлой темы */
+body.light-theme { background-color: #fcfcfc; color: #333; } /* Светлый фон и темный текст */
+
+/* Настройки темной темы */
+body.dark-theme { background-color: #121212; color: #f0f0f0; } /* Темный фон и светлый текст */
+
+/* Карточки заданий */
+.card { margin-bottom: 30px; } /* Внешний отступ снизу для каждого задания */
+.description { color: #888; font-size: 14px; margin-bottom: 20px; } /* Цвет подзаголовка */
+hr { border: 0; border-top: 1px solid #eee; margin: 20px 0; } /* Разделительная линия */
+
+/* Синие кнопки (ТЗ) */
+.btn-primary { 
+    background-color: #007bff; /* Фон кнопки синий */
+    color: white; border: none; /* Белый текст, без рамки */
+    padding: 8px 16px; border-radius: 4px; /* Внутренние поля и скругление */
+    cursor: pointer; font-size: 14px; /* Вид курсора и размер шрифта */
+    margin-right: 5px; /* Разделение кнопок в группе */
+}
+.btn-primary:hover { background-color: #0056b3; } /* Цвет кнопки при наведении */
+
+/* Табло времени */
+.display-bold { 
+    font-family: 'Courier New', monospace; /* Моноширинный шрифт для цифр */
+    font-weight: bold; font-size: 1.4rem; /* Жирный текст и крупный размер */
+    margin-right: 20px; /* Отступ справа */
 }
 
-body { /* Общие стили */
-    background-color: var(--bg-color); /* Применение фона */
-    color: var(--text-color); /* Применение текста */
-    font-family: 'Segoe UI', sans-serif; /* Шрифт */
-    transition: background 0.4s, color 0.4s; /* Плавность темы */
-    display: flex; /* Флекс для центровки */
-    justify-content: center; /* Центр по горизонтали */
-    padding: 20px; /* Поля */
-    margin: 0; /* Сброс */
+/* Строка статуса во 2 задании */
+.status-message { font-weight: bold; margin-top: 10px; font-size: 14px; } /* Стиль текста статуса */
+
+/* ЗАДАНИЕ 3: Ширина по длине заголовка (~350px) */
+.notification-row { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; } /* Элементы в ряд */
+#notification-input { 
+    padding: 8px; border: 1px solid #ccc; border-radius: 4px; 
+    width: 350px; /* Фиксированная ширина поля ввода */
+} 
+.notification-box { 
+    padding: 12px; margin-top: 10px; border-radius: 4px; 
+    width: 350px; /* Ширина совпадает с полем ввода */
+    box-sizing: border-box; /* Включение паддингов в ширину 350px */
+    transition: 0.3s; min-height: 45px; /* Плавность появления и высота */
 }
 
-.container { width: 100%; max-width: 850px; } /* Ограничение ширины */
+/* Рамки уведомлений из ТЗ */
+.active-green { 
+    border: 2px solid #28a745; /* Сплошная зеленая рамка при показе */
+    background-color: #f8fff9; /* Легкий зеленый фон */
+    display: block; /* Отображение блока */
+}
+.canceled-yellow { 
+    border: 2px dashed #ffc107; /* Желтый штрихпунктир при отмене */
+    background-color: #fffdf5; /* Легкий желтый фон */
+    display: block; /* Отображение блока */
+}
+.hidden { display: none; } /* Скрытие элемента */
 
-.header-flex { /* Шапка */
-    display: flex; /* Ряд */
-    justify-content: space-between; /* По краям */
-    align-items: center; /* По центру вертикали */
-    margin-bottom: 30px; /* Отступ снизу */
+/* Текстовая область в 5 задании */
+textarea { 
+    width: 100%; max-width: 600px; height: 100px; padding: 10px; 
+    border: 1px solid #ccc; border-radius: 4px; resize: none; /* Запрет на растягивание */
 }
 
-.card { /* Блоки заданий */
-    background: var(--card-bg); /* Цвет карточки */
-    padding: 30px; /* Поля */
-    border-radius: 15px; /* Скругление */
-    margin-bottom: 25px; /* Расстояние */
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* Тень */
+/* Плавающая кнопка темы */
+.theme-btn-fixed { 
+    position: fixed; bottom: 30px; right: 30px; /* Позиция в углу */
+    width: 50px; height: 50px; border-radius: 50%; /* Круглая кнопка */
+    cursor: pointer; background: white; border: 1px solid #ddd; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-size: 22px; /* Тень и размер иконки */
 }
-
-.display { /* Табло цифр */
-    font-size: 3.5rem; /* Размер шрифта */
-    font-weight: bold; /* Жирный */
-    text-align: center; /* Центр */
-    margin: 20px 0; /* Поля */
-}
-
-#autosave-textarea { /* Поле ввода (Задание 5) */
-    width: 100%; /* Ширина */
-    min-height: 250px; /* Увеличенная высота по ТЗ */
-    padding: 15px; /* Внутренние поля */
-    box-sizing: border-box; /* Учет рамок */
-    border-radius: 10px; /* Скругление */
-    border: 2px solid #ddd; /* Рамка */
-    margin: 15px 0; /* Поля */
-    background: transparent; /* Прозрачность */
-    color: inherit; /* Цвет текста */
-    resize: vertical; /* Тянуть только вниз */
-}
-
-button { /* Общие кнопки */
-    padding: 12px 20px; /* Размер */
-    cursor: pointer; /* Палец */
-    border-radius: 8px; /* Скругление */
-    border: none; /* Без рамок */
-    background: var(--accent); /* Синий цвет */
-    color: white; /* Белый текст */
-    font-weight: 600; /* Жирный */
-}
-
-.notification-toast { /* Уведомление */
-    position: fixed; /* Фиксация */
-    top: 20px; /* Сверху */
-    right: 20px; /* Справа */
-    background: #27ae60; /* Зеленый */
-    color: white; /* Белый текст */
-    padding: 15px 25px; /* Поля */
-    border-radius: 8px; /* Скругление */
-    display: flex; /* Ряд */
-    align-items: center; /* Центр */
-    gap: 15px; /* Промежуток */
-    z-index: 1000; /* Сверху всех */
-}
-
-.info-block ul { list-style: none; padding: 0; } /* Список BOM */
-.info-block li { padding: 8px 0; border-bottom: 1px solid #eee; word-break: break-all; } /* Строки данных */
+.hint-text { color: #999; font-size: 12px; margin-top: 5px; } /* Мелкий серый текст */

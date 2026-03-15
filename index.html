@@ -1,69 +1,88 @@
-<!DOCTYPE html> <!-- Тип документа HTML5 -->
+<!DOCTYPE html> <!-- Объявление типа документа HTML5 -->
 <html lang="ru"> <!-- Язык страницы — русский -->
-<head> <!-- Технический блок -->
-    <meta charset="UTF-8"> <!-- Кодировка для кириллицы -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Адаптивность -->
-    <title>JS Practice 05 - Финал</title> <!-- Заголовок -->
-    <link rel="stylesheet" href="style.css"> <!-- Стили -->
-</head> <!-- Конец головы -->
-<body class="light-theme"> <!-- Тело со светлой темой -->
-    <div class="container"> <!-- Центрирующий блок -->
-        <header class="header-flex"> <!-- Шапка -->
-            <h1>Практика: BOM и Таймеры</h1> <!-- Заголовок -->
-            <button id="theme-toggle">Сменить тему</button> <!-- Переключатель тем -->
-        </header> <!-- Конец шапки -->
+<head>
+    <meta charset="UTF-8"> <!-- Кодировка для корректного отображения текста -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Настройка для мобильных экранов -->
+    <title>Практическая работа №5</title> <!-- Заголовок во вкладке браузера -->
+    <link rel="stylesheet" href="style.css"> <!-- Подключение файла стилей -->
+</head>
+<body class="light-theme"> <!-- Основное тело страницы, тема по умолчанию — светлая -->
 
-        <!-- Задание 1: Секундомер -->
-        <section class="card"> <!-- Карточка секундомера -->
-            <h2>⏱ Секундомер</h2> <!-- Название -->
-            <div id="stopwatch-display" class="display">00:00:00</div> <!-- Табло -->
-            <div class="controls"> <!-- Кнопки -->
-                <button id="stopwatch-start">Старт</button> <!-- Старт -->
-                <button id="stopwatch-stop">Стоп</button> <!-- Стоп -->
-                <button id="stopwatch-reset">Сброс</button> <!-- Сброс -->
-            </div> <!-- Конец кнопок -->
-        </section> <!-- Конец секции -->
+    <header> <!-- Шапка документа -->
+        <h1>Практическая работа №5: BOM, таймеры и диалоги</h1> <!-- Главный заголовок -->
+        <p class="description">Демонстрация: Window/BOM, setTimeout/setInterval, localStorage, диалоги и автосохранение</p> <!-- Подзаголовок -->
+    </header>
 
-        <!-- Задание 2: Обратный отсчёт -->
-        <section class="card"> <!-- Карточка отсчета -->
-            <h2>⏳ Обратный отсчёт</h2> <!-- Название -->
-            <input type="number" id="countdown-input" placeholder="Введите секунды"> <!-- Поле ввода -->
-            <div id="countdown-display" class="display">00:00</div> <!-- Табло -->
-            <div class="controls"> <!-- Кнопки -->
-                <button id="countdown-start">Запустить</button> <!-- Старт -->
-                <button id="countdown-stop">Остановить</button> <!-- Пауза -->
-                <button id="countdown-reset">Сброс</button> <!-- Сброс -->
-            </div> <!-- Конец кнопок -->
-        </section> <!-- Конец секции -->
+    <section class="time-section"> <!-- Блок с живыми часами -->
+        <h2>Текущее время</h2> <!-- Заголовок часов -->
+        <div id="current-time">00:00:00</div> <!-- Место вывода времени -->
+    </section>
 
-        <!-- Задание 3: Уведомления -->
-        <section class="card"> <!-- Карточка уведомлений -->
-            <h2>🔔 Уведомления</h2> <!-- Название -->
-            <button id="notification-show">Показать уведомление через 3 сек</button> <!-- Кнопка вызова -->
-            <div id="notification" class="notification-toast" style="display: none;"> <!-- Блок сообщения -->
-                <span>✅ Операция выполнена успешно!</span> <!-- Текст -->
-                <button id="notification-close">Закрыть</button> <!-- Закрыть -->
-            </div> <!-- Конец блока -->
-        </section> <!-- Конец секции -->
+    <hr> <!-- Разделительная черта -->
 
-        <!-- Задание 4: Информация о браузере (BOM) -->
-        <section class="card"> <!-- Карточка данных ВОМ -->
-            <h2>ℹ️ Данные браузера (BOM)</h2> <!-- Название -->
-            <button id="browser-info-btn">Показать полную информацию</button> <!-- Кнопка получения -->
-            <div id="browser-info" class="info-block"></div> <!-- Вывод списка -->
-        </section> <!-- Конец секции -->
+    <section class="card" id="task1"> <!-- Секция Задания 1 -->
+        <h2>Задание 1 — Секундомер (setInterval)</h2> <!-- Название блока -->
+        <div class="stopwatch-row"> <!-- Контейнер строки управления -->
+            <span id="stopwatch-display" class="display-bold">00:00:00</span> <!-- Табло секундомера -->
+            <div class="button-group"> <!-- Группа кнопок -->
+                <button id="stopwatch-start" class="btn-primary">Старт</button> <!-- Кнопка пуска -->
+                <button id="stopwatch-stop" class="btn-primary">Стоп</button> <!-- Кнопка паузы -->
+                <button id="stopwatch-reset" class="btn-primary">Сброс</button> <!-- Кнопка очистки -->
+            </div>
+        </div>
+        <p class="hint-text">timerIdentifier — используется для управления интервалом секундомера</p> <!-- Подсказка из ТЗ -->
+    </section>
 
-        <!-- Задание 5: Автосохранение (PRO) -->
-        <section class="card"> <!-- Карточка автосохранения -->
-            <h2>💾 Автосохранение (PRO)</h2> <!-- Название -->
-            <p id="autosave-indicator">Ожидание ввода...</p> <!-- Статус -->
-            <textarea id="autosave-textarea" placeholder="Ваш текст здесь..."></textarea> <!-- Увеличенное поле -->
-            <div class="controls"> <!-- Кнопки -->
-                <button id="autosave-toggle">Остановить автосохранение</button> <!-- Вкл/выкл -->
-                <button id="autosave-clear">Очистить черновик</button> <!-- Очистка -->
-            </div> <!-- Конец кнопок -->
-        </section> <!-- Конец секции -->
-    </div> <!-- Конец контейнера -->
-    <script src="script.js"></script> <!-- Скрипты -->
-</body> <!-- Конец тела -->
-</html> <!-- Конец HTML -->
+    <hr> <!-- Разделитель -->
+
+    <section class="card" id="task2"> <!-- Секция Задания 2 -->
+        <h2>Задание 2 — Обратный отсчёт (setInterval)</h2> <!-- Название блока -->
+        <div class="input-row"> <!-- Строка ввода секунд -->
+            <label>Секунд: <input type="number" id="countdown-input" value="50"></label> <!-- Инпут для ввода -->
+        </div>
+        <div class="button-group"> <!-- Группа кнопок таймера -->
+            <button id="countdown-start" class="btn-primary">Старт</button> <!-- Запуск отсчета -->
+            <button id="countdown-stop" class="btn-primary">Стоп</button> <!-- Остановка отсчета -->
+        </div>
+        <div id="countdown-status" class="status-message">Остановлено</div> <!-- Статус таймера из ТЗ -->
+    </section>
+
+    <hr> <!-- Разделитель -->
+
+    <section class="card" id="task3"> <!-- Секция Задания 3 -->
+        <h2>Задание 3 — Уведомления с задержкой (setTimeout)</h2> <!-- Название блока -->
+        <div class="notification-row"> <!-- Контейнер управления уведомлением -->
+            <input type="text" id="notification-input" placeholder="Введите текст уведомления"> <!-- Поле ввода текста -->
+            <div class="button-group"> <!-- Кнопки вызова/отмены -->
+                <button id="show-notification" class="btn-primary">Показать уведомление</button> <!-- Вызов уведомления -->
+                <button id="cancel-notification" class="btn-primary">Отменить удаление</button> <!-- Отмена удаления -->
+            </div>
+        </div>
+        <div id="notification-display" class="notification-box hidden"></div> <!-- Блок вывода с рамками -->
+        <p class="hint-text">notificationTimerId — хранит ID таймера удаления уведомления</p> <!-- Подсказка по ТЗ -->
+    </section>
+
+    <hr> <!-- Разделитель -->
+
+    <section class="card" id="task4"> <!-- Секция Задания 4 -->
+        <h2>Задание 4 — Информация о браузере и устройстве (BOM)</h2> <!-- Название блока -->
+        <ul class="bom-list" id="bom-info-list"></ul> <!-- Список, заполняемый через функцию getBOMInfo() -->
+    </section>
+
+    <hr> <!-- Разделитель -->
+
+    <section class="card" id="task5"> <!-- Секция Задания 5 -->
+        <h2>Задание 5 — Автосохранение формы (setInterval+localStorage)</h2> <!-- Название блока -->
+        <textarea id="autosave-text" placeholder="Введите текст..."></textarea> <!-- Поле для автосохранения -->
+        <div class="save-controls"> <!-- Контейнер статуса и кнопок -->
+            <button id="clear-storage" class="btn-primary">Очистить</button> <!-- Кнопка удаления из LocalStorage -->
+            <span id="save-status">Сохранено: --:--:--</span> <!-- Статус времени последнего сохранения -->
+        </div>
+        <p class="hint-text">Автосохранение каждые 2 секунды в localStorage в виде объекта {text, time}</p> <!-- Пояснение -->
+    </section>
+
+    <button id="theme-toggle" class="theme-btn-fixed">☀️</button> <!-- Плавающая кнопка темы в углу -->
+
+    <script src="script.js"></script> <!-- Подключение скриптов JavaScript -->
+</body>
+</html>

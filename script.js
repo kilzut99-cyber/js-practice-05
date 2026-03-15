@@ -1,163 +1,169 @@
-// === ЛОГИКА ТЕМЫ (АВТО + РУЧНАЯ) ===
-const themeBtn = document.getElementById("theme-toggle"); // Кнопка темы
-const body = document.body; // Ссылка на body
+// === БЛОК 0: ЖИВЫЕ ЧАСЫ ===
+setInterval(() => { // Запуск интервала для обновления времени каждую секунду (по техническому заданию - далее ТЗ)
+    const now = new Date(); // Получение текущей даты
+    // Форматирование времени в ЧЧ:ММ:СС с добавлением нулей слева
+    const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+    document.getElementById("current-time").textContent = time; // Вывод времени в HTML-блок
+}, 1000); // Периодичность — 1000 мс (1 секунда)
 
-function initTheme() { // Установка темы по времени
-    const hour = new Date().getHours(); // Получаем текущий час
-    if (hour >= 21 || hour < 6) { // Ночное время по ТЗ
-        body.classList.add("dark-theme"); // Темная тема
-        themeBtn.textContent = "Тема: Ночь (Авто)"; // Текст кнопки
-    } else { // Дневное время
-        body.classList.remove("dark-theme"); // Светлая тема
-        themeBtn.textContent = "Тема: День (Авто)"; // Текст кнопки
-    }
-}
-initTheme(); // Запуск функции при старте
+// === ЗАДАНИЕ 1: СЕКУНДОМЕР ===
+let swSec = 0; // Переменная для счета секунд
+let timerIdentifier = null; // Обязательное имя переменной для ID таймера согласно ТЗ
+const swDisplay = document.getElementById("stopwatch-display"); // Элемент табло времени
 
-themeBtn.addEventListener("click", () => { // Переключение вручную
-    body.classList.toggle("dark-theme"); // Инверсия класса
-    themeBtn.textContent = body.classList.contains("dark-theme") ? "Тема: Ночь" : "Тема: День"; // Обновление текста
+document.getElementById("stopwatch-start").addEventListener("click", () => { // Клик по кнопке Старт
+    if (timerIdentifier !== null) return; // Строгая проверка: если таймер работает, повторно не запускаем
+    // Использую setInterval для ежесекундного счета времени
+    timerIdentifier = setInterval(() => {
+        swSec++; // Инкремент секунд
+        const h = Math.floor(swSec / 3600); // Расчет часов
+        const m = Math.floor((swSec % 3600) / 60); // Расчет полных минут
+        const s = swSec % 60; // Расчет остатка секунд
+        // Формирование и вывод строки времени 00:00:00 (согласно скриншоту)
+        swDisplay.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }, 1000); // Интервал — 1 секунда
 });
 
-
-// === ЗАДАНИЕ 1: СЕКУНДОМЕР (setInterval) ===
-let swSec = 0, swId = null; // Секунды и ID интервала
-const swDisp = document.getElementById("stopwatch-display"); // Табло
-
-document.getElementById("stopwatch-start").addEventListener("click", () => { // Старт
-    if (swId !== null) return; // Защита от дублей по ТЗ
-    // Использую setInterval, так как нужно циклически увеличивать время каждую секунду
-    swId = setInterval(() => { 
-        swSec++; // +1 секунда
-        const h = Math.floor(swSec / 3600), m = Math.floor((swSec % 3600) / 60), s = swSec % 60; // Расчеты
-        swDisp.textContent = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`; // Формат 00:00:00
-    }, 1000); // Интервал 1 сек
+document.getElementById("stopwatch-stop").addEventListener("click", () => { // Клик по кнопке Стоп
+    // Использую clearInterval для остановки фонового выполнения кода
+    clearInterval(timerIdentifier); 
+    timerIdentifier = null; // Сброс идентификатора в null для возможности нового запуска
 });
 
-document.getElementById("stopwatch-stop").addEventListener("click", () => { // Стоп
-    // Использую clearInterval, чтобы остановить выполнение фонового процесса
-    clearInterval(swId); swId = null; 
+document.getElementById("stopwatch-reset").addEventListener("click", () => { // Клик по кнопке Сброс
+    clearInterval(timerIdentifier); // Остановка таймера перед обнулением
+    timerIdentifier = null; // Обнуление ID
+    swSec = 0; // Сброс счетчика секунд
+    swDisplay.textContent = "00:00:00"; // Возврат табло в исходное положение
 });
 
-document.getElementById("stopwatch-reset").addEventListener("click", () => { // Сброс
-    // Использую clearInterval, чтобы остановить процесс перед очисткой переменных
-    clearInterval(swId); swId = null; swSec = 0; swDisp.textContent = "00:00:00"; // Обнуление
-});
+// === ЗАДАНИЕ 2: ОБРАТНЫЙ ОТСЧЕТ (УВЕДОМЛЕНИЕ В СТРОКЕ) ===
+let cdIntervalId = null; // Переменная для хранения ID интервала отсчета
+const cdInp = document.getElementById("countdown-input"); // Поле ввода секунд
+const cdStat = document.getElementById("countdown-status"); // Строка статуса (Остановлено/Осталось)
 
+document.getElementById("countdown-start").addEventListener("click", () => { // Клик на Старт
+    const val = parseInt(cdInp.value); // Чтение числа из текстового поля ввода
+    if (isNaN(val) || val <= 0) return alert("Введите положительное число!"); // BOM alert при некорректном вводе
+    if (cdIntervalId !== null) return; // Защита от одновременного запуска нескольких интервалов
 
-// === ЗАДАНИЕ 2: ОБРАТНЫЙ ОТСЧЁТ (setInterval) - ИСПРАВЛЕНО ===
-let cdId = null, cdLeft = 0; // ID и оставшееся время
-const cdInput = document.getElementById("countdown-input"), cdDisp = document.getElementById("countdown-display"); // Ввод/Вывод
+    let left = val; // Локальный счетчик секунд
+    cdStat.textContent = `Осталось: ${left} сек.`; // Установка начального текста в строку статуса
 
-document.getElementById("countdown-start").addEventListener("click", () => { // Кнопка запуска
-    const val = parseInt(cdInput.value); // Читаем ввод пользователя
-    if (isNaN(val) || val <= 0) return cdDisp.textContent = "❌ Ошибка!"; // Валидация по ТЗ
-    
-    // Использую clearInterval, чтобы очистить старый таймер перед запуском нового (предотвращает "ускорение")
-    if (cdId !== null) clearInterval(cdId); 
-    
-    cdLeft = val; // Устанавливаем новое время старта
-    // Использую setInterval, чтобы уменьшать значение на 1 каждую секунду
-    cdId = setInterval(() => {
-        if (cdLeft <= 0) { // Проверка завершения
-            // Использую clearInterval, так как время вышло и нам больше не нужно тратить ресурсы процессора
-            clearInterval(cdId); cdId = null; 
-            cdDisp.textContent = "⌛ Время вышло!"; // Сообщение об окончании
-            return;
+    // Использую setInterval для обновления статуса каждую секунду
+    cdIntervalId = setInterval(() => {
+        left--; // Уменьшение времени на 1 секунду
+        if (left <= 0) { // Проверка достижения нуля
+            clearInterval(cdIntervalId); // Использую clearInterval для остановки, когда время истекло
+            cdIntervalId = null; // Сброс ID интервала
+            cdStat.textContent = "Время вышло!"; // Сообщение о завершении в строку статуса
+            alert("Время вышло!"); // Уведомление через диалоговое окно BOM (alert)
+        } else {
+            cdStat.textContent = `Осталось: ${left} сек.`; // Обновление текста со значением остатка
         }
-        cdLeft--; // Минус одна секунда
-        const m = Math.floor(cdLeft / 60), s = cdLeft % 60; // Расчет минут и секунд
-        cdDisp.textContent = `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`; // Формат ММ:СС
-    }, 1000); // Задержка 1 сек
+    }, 1000); // Период — 1 секунда
 });
 
-document.getElementById("countdown-stop").addEventListener("click", () => { // Пауза
-    // Использую clearInterval, чтобы приостановить обратный отсчет по клику пользователя
-    clearInterval(cdId); cdId = null; 
+document.getElementById("countdown-stop").addEventListener("click", () => { // Клик на Стоп
+    clearInterval(cdIntervalId); // Остановка фонового обратного отсчета
+    cdIntervalId = null; // Обнуление переменной ID интервала
+    cdStat.textContent = "Остановлено"; // Статичное сообщение как на твоем скриншоте
 });
 
-document.getElementById("countdown-reset").addEventListener("click", () => { // Сброс
-    // Использую clearInterval, чтобы гарантированно остановить любой активный цикл отсчета
-    clearInterval(cdId); cdId = null; cdLeft = 0; cdDisp.textContent = "00:00"; cdInput.value = ""; // Очистка всего
+// === ЗАДАНИЕ 3: УВЕДОМЛЕНИЯ С ПЕРЕМЕННЫМИ РАМКАМИ ===
+let notificationTimerId = null; // Обязательное имя переменной согласно ТЗ для таймера уведомления
+const nInp = document.getElementById("notification-input"); // Поле ввода текста (сбоку от кнопок)
+const nDisplay = document.getElementById("notification-display"); // Блок вывода сообщения (снизу)
+
+document.getElementById("show-notification").addEventListener("click", () => { // Клик Показать уведомление
+    const text = nInp.value || "Успешно сохранено"; // Чтение текста или установка фразы по умолчанию
+    nDisplay.textContent = text; // Вставка текста в блок уведомления
+    nDisplay.className = "notification-box active-green"; // Установка класса зеленой сплошной рамки (скриншот)
+
+    if (notificationTimerId !== null) clearTimeout(notificationTimerId); // Отмена старого таймера при новом клике
+
+    // Использую setTimeout для одиночного скрытия уведомления через 3 секунды (согласно ТЗ)
+    notificationTimerId = setTimeout(() => {
+        nDisplay.className = "notification-box hidden"; // Скрытие блока уведомления
+        notificationTimerId = null; // Сброс ID таймера после выполнения
+    }, 3000); // Задержка — 3000 мс (3 секунды)
 });
 
-
-// === ЗАДАНИЕ 3: УВЕДОМЛЕНИЯ (setTimeout) ===
-let showId = null, hideId = null; // Таймеры управления
-const note = document.getElementById("notification"); // Блок сообщения
-
-document.getElementById("notification-show").addEventListener("click", () => { // Показать
-    // Использую clearTimeout, чтобы сбросить старый план показа, если пользователь кликнул снова (ТЗ)
-    if (showId) clearTimeout(showId); 
-    // Использую setTimeout для выполнения действия строго через 3 секунды задержки по ТЗ
-    showId = setTimeout(() => {
-        note.style.display = "flex"; // Показываем блок
-        // Использую setTimeout для автоматического скрытия элемента ровно через 5 секунд после появления
-        hideId = setTimeout(() => note.style.display = "none", 5000); 
-    }, 3000); // 3 сек
-});
-
-document.getElementById("notification-close").addEventListener("click", () => { // Закрыть
-    // Использую clearTimeout, чтобы отменить автоматическое скрытие, так как юзер закрыл вручную
-    clearTimeout(hideId); note.style.display = "none"; 
-});
-
-
-// === ЗАДАНИЕ 4: ИНФОРМАЦИЯ О БРАУЗЕРЕ (BOM) - 10 ПУНКТОВ ===
-document.getElementById("browser-info-btn").addEventListener("click", () => { // Кнопка сбора
-    const block = document.getElementById("browser-info"); // Блок вывода
-    // Регулярное выражение для определения мобильного устройства по User Agent (ТЗ)
-    const isMob = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    const device = isMob ? "📱 Мобильное устройство" : "💻 Десктоп";
-    // Формируем 10 пунктов инфо, декодируя кириллицу в URL и Пути через decodeURIComponent
-    block.innerHTML = `
-        <ul style="padding:0; list-style:none;">
-            <li><strong>1. Текущий URL:</strong> ${decodeURIComponent(location.href)}</li>
-            <li><strong>2. Протокол:</strong> ${location.protocol}</li>
-            <li><strong>3. Домен:</strong> ${location.hostname}</li>
-            <li><strong>4. Путь:</strong> ${decodeURIComponent(location.pathname)}</li>
-            <li><strong>5. Язык:</strong> ${navigator.language}</li>
-            <li><strong>6. User Agent:</strong> ${navigator.userAgent}</li>
-            <li><strong>7. Статус:</strong> ${navigator.onLine ? "🟢 Онлайн" : "🔴 Офлайн"}</li>
-            <li><strong>8. Разрешение экрана:</strong> ${screen.width} x ${screen.height}</li>
-            <li><strong>9. Размер окна:</strong> ${window.innerWidth} x ${window.innerHeight}</li>
-            <li><strong>10. Устройство:</strong> ${device}</li>
-        </ul>
-    `;
-});
-
-
-// === ЗАДАНИЕ 5: АВТОСОХРАНЕНИЕ (setInterval + localStorage) ===
-let autoId = null; // Хранитель интервала
-const area = document.getElementById("autosave-textarea"), ind = document.getElementById("autosave-indicator"); // Поле и статус
-
-function doSave() { // Функция сохранения
-    const txt = area.value.trim(); // Получаем текст
-    if (txt === "") return; // Условие ТЗ: не сохранять пустые данные
-    localStorage.setItem("final_backup", txt); // Пишем в память под ключом
-    ind.textContent = `💾 Сохранено: ${new Date().toLocaleTimeString()}`; // Статус времени
-}
-
-function startAuto() { // Запуск фонового процесса
-    // Использую setInterval для автоматического сохранения черновика в память каждые 10 секунд
-    autoId = setInterval(doSave, 10000); // 10 сек
-}
-
-document.getElementById("autosave-toggle").addEventListener("click", function() { // Переключатель кнопки
-    if (autoId) { // Если процесс идет
-        // Использую clearInterval для остановки фонового процесса сохранения по воле пользователя
-        clearInterval(autoId); autoId = null; this.textContent = "Возобновить автосохранение"; 
-    } else { // Если процесс на паузе
-        startAuto(); this.textContent = "Остановить автосохранение";
+document.getElementById("cancel-notification").addEventListener("click", () => { // Клик Отменить удаление
+    // Использую clearTimeout для отмены запланированного действия внутри setTimeout
+    if (notificationTimerId !== null) {
+        clearTimeout(notificationTimerId); // Остановка таймера скрытия
+        notificationTimerId = null; // Обнуление переменной таймера
+        nDisplay.className = "notification-box canceled-yellow"; // Смена стиля на желтый пунктир (скриншот)
+        alert("Удаление уведомления отменено!"); // Подтверждение отмены через BOM alert
     }
 });
 
-window.addEventListener("load", () => { // При загрузке страницы
-    const bkp = localStorage.getItem("final_backup"); // Проверяем наличие данных в памяти
-    if (bkp) { area.value = bkp; ind.textContent = "✅ Черновик восстановлен"; } // Возвращаем текст
-    startAuto(); // Включаем автосохранение по умолчанию
+// === ЗАДАНИЕ 4: BOM ПАРАМЕТРЫ (ИСПОЛЬЗУЮ ФУНКЦИЮ getBOMInfo С ПЕРЕЧИСЛЕНИЕМ) ===
+function getBOMInfo() { // Функция для сбора и вывода расширенных данных BOM (согласно исходному коду)
+    const list = document.getElementById("bom-info-list"); // Элемент списка в HTML документе
+    list.innerHTML = ""; // Начальная очистка содержимого списка перед заполнением
+    
+    // Определение типа устройства и значка (💻 для ПК, 📱 для мобильных)
+    const deviceIcon = /Mobi|Android|iPone|iPad|iPod/i.test(navigator.userAgent) ? "📱Мобильное устройство" : "💻 Десктоп";
+    // Определение значка онлайн/офлайн статуса (🟢 онлайн, 🔴 офлайн)
+    const onlineIcon = navigator.onLine ? "🟢 Онлайн" : "🔴 Офлайн";
+
+    // Использую прямое перечисление через оператор += для вывода данных в список (как в исходном коде)
+    list.innerHTML += `<li><strong>User-Agent:</strong> ${navigator.userAgent}</li>`; // Данные о браузере
+    list.innerHTML += `<li><strong>Протокол:</strong> ${location.protocol}</li>`; // Используемый протокол (http/https)
+    list.innerHTML += `<li><strong>Домен:</strong> ${location.hostname}</li>`; // Доменное имя текущего сайта
+    list.innerHTML += `<li><strong>Устройство:</strong> ${deviceIcon}</li>`; // Тип устройства со значком
+    list.innerHTML += `<li><strong>Статус сети:</strong> ${onlineIcon}</li>`; // Статус подключения с иконкой
+    list.innerHTML += `<li><strong>Экран:</strong> ${screen.width}x${screen.height}</li>`; // Разрешение монитора
+    list.innerHTML += `<li><strong>Окно:</strong> ${window.innerWidth}x${window.innerHeight}</li>`; // Размер вьюпорта
+    list.innerHTML += `<li><strong>Cookies:</strong> ${navigator.cookieEnabled ? "Да" : "Нет"}</li>`; // Статус куков
+    list.innerHTML += `<li><strong>URL:</strong> ${decodeURIComponent(location.href)}</li>`; // URL (декодирован для кириллицы)
+    list.innerHTML += `<li><strong>Путь:</strong> ${decodeURIComponent(location.pathname)}</li>`; // Путь (декодирован)
+}
+getBOMInfo(); // Автоматический запуск функции заполнения BOM при загрузке страницы (согласно ТЗ)
+
+// === ЗАДАНИЕ 5: LOCAL STORAGE (АВТОСОХРАНЕНИЕ КАЖДЫЕ 2 СЕКУНДЫ) ===
+const area = document.getElementById("autosave-text"); // Поле ввода текста (textarea)
+const sStatus = document.getElementById("save-status"); // Элемент вывода времени сохранения
+const STORAGE_KEY = "bom_autosave"; // Ключ для хранения записи в LocalStorage (со скриншота)
+
+// Восстановление: использую JSON.parse для перевода строки из хранилища в объект JavaScript
+const savedDataString = localStorage.getItem(STORAGE_KEY); // Чтение данных из памяти LocalStorage
+if (savedDataString !== null) { // Если запись существует (проверка !== null согласно ТЗ)
+    const parsedData = JSON.parse(savedDataString); // Парсинг текстовой строки в объект данных
+    area.value = parsedData.text; // Восстановление текста в textarea
+    sStatus.textContent = `Сохранено: ${parsedData.time}`; // Показ метки времени последнего сохранения
+}
+
+// Автосохранение: использую setInterval для циклической записи данных каждые 2 сек (согласно ТЗ)
+setInterval(() => {
+    if (area.value.trim() === "") return; // Если текстовое поле пустое, сохранение не производится
+    
+    const objToSave = { // Создание объекта данных (структура из твоего скриншота)
+        text: area.value, // Текущий текст из textarea
+        time: new Date().toLocaleTimeString() // Текущее системное время в формате ЧЧ:ММ:СС
+    };
+    
+    // Использую JSON.stringify, так как LocalStorage поддерживает только хранение строк
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(objToSave)); // Запись данных в хранилище LocalStorage
+    sStatus.textContent = `Сохранено: ${objToSave.time}`; // Обновление текста статуса в HTML интерфейсе
+}, 2000); // Период выполнения — 2 секунды (2000 мс) согласно условию ТЗ
+
+document.getElementById("clear-storage").addEventListener("click", () => { // Обработчик кнопки Очистить
+    // Использую confirm (диалог BOM) для получения подтверждения удаления данных пользователем
+    if (confirm("Вы уверены, что хотите очистить сохраненные данные?")) {
+        localStorage.removeItem(STORAGE_KEY); // Полное удаление записи из LocalStorage по заданному ключу
+        area.value = ""; // Очистка текстового поля ввода на странице
+        sStatus.textContent = "Сохранено: --:--:--"; // Сброс визуальной метки времени
+        alert("Данные успешно удалены!"); // Подтверждение очистки через диалоговое окно alert
+    }
 });
 
-document.getElementById("autosave-clear").addEventListener("click", () => { // Очистка
-    localStorage.removeItem("final_backup"); area.value = ""; ind.textContent = "🗑 Черновик удален"; // Удаление всего
+// === СМЕНА ТЕМЫ ОФОРМЛЕНИЯ ===
+document.getElementById("theme-toggle").addEventListener("click", function() { // Обработка клика по плавающей кнопке
+    const body = document.body; // Получение ссылки на тег body
+    const isLightNow = body.classList.toggle("light-theme"); // Переключение класса светлой темы и получение результата
+    body.classList.toggle("dark-theme", !isLightNow); // Если светлый класс выключен — включаем темный
+    this.textContent = isLightNow ? "☀️" : "🌙"; // Обновление значка на кнопке (солнце или луна)
 });
